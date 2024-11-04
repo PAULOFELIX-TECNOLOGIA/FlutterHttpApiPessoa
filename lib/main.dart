@@ -2,6 +2,12 @@
 //https://github.com/MahdiSharifiFar/flutter_crud_php/blob/main/lib/home_page.dart
 //https://www.youtube.com/watch?v=A7sCaN4wnQ4&list=PLKbhw6n2iYKhv-8tBAw6FTsTMuM1OgjC7&index=4
 
+/*Observação
+C:\flutter\packages\flutter_tools\lib\src\web 
+alterar o arquivo chome.dart 
+desativando //'--disable-extensions',
+e adicionando '--disable-web-security', */
+
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
@@ -99,7 +105,17 @@ class _HomePageState extends State<HomePage> {
                             Text(
                               _usersList[index].cpf_pessoa,
                               style: const TextStyle(
-                                  fontSize: 11, color: Colors.black),
+                                  fontSize: 18, color: Colors.black),
+                            ),
+                            Text(
+                              _usersList[index].nome_pessoa,
+                              style: const TextStyle(
+                                  fontSize: 18, color: Colors.black),
+                            ),
+                            Text(
+                              _usersList[index].profissao_pessoa,
+                              style: const TextStyle(
+                                  fontSize: 18, color: Colors.black),
                             ),
                             Row(
                               children: [
@@ -142,18 +158,45 @@ class _HomePageState extends State<HomePage> {
 }
 
 class User {
-  String cpf_pessoa;
+  String cpf_pessoa, nome_pessoa, profissao_pessoa;
 
   User({
     required this.cpf_pessoa,
+    required this.nome_pessoa,
+    required this.profissao_pessoa,
   });
   factory User.fromJson(Map<String, dynamic> json) {
     return User(
       cpf_pessoa: (json['cpf_pessoa']),
+      nome_pessoa: (json['nome_pessoa']),
+      profissao_pessoa: (json['profissao_pessoa']),
     );
   }
 }
 
+/*class User {
+  String cpf_pessoa,
+  nome_pessoa,
+  profissao_pessoa,
+  email_contato,
+  telefone_contato;
+
+  User(
+      {required this.cpf_pessoa,
+      required this.nome_pessoa,
+      required this.profissao_pessoa,
+      required email_contato,
+      required this.telefone_contato});
+  factory User.fromJson(Map<String, dynamic> json) {
+    return User(
+      cpf_pessoa: (json['cpf_pessoa']),
+      nome_pessoa: (json['nome_pessoa']),
+      profissao_pessoa: (json['profissao_pessoa']),
+      telefone_contato: (json['telefone_pessoa']),
+      email_contato: (json['email_pessoa']),
+    );
+  }
+}*/
 extension on Map {
   String convertToJson() => jsonEncode(this);
 }
