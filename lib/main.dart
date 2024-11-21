@@ -1,13 +1,12 @@
-//https://www.google.com/search?q=consulta+flutter+http+php&sca_esv=f602dc89620483ed&ei=qLUSZ5qaCufI1sQPxK3U8AY&ved=0ahUKEwiajvXi05iJAxVnpJUCHcQWFW4Q4dUDCA8&uact=5&oq=consulta+flutter+http+php&gs_lp=Egxnd3Mtd2l6LXNlcnAiGWNvbnN1bHRhIGZsdXR0ZXIgaHR0cCBwaHAyCBAAGIAEGKIESM9DULMHWKw4cAJ4AJABAJgBjAGgAbYKqgEEMC4xMbgBA8gBAPgBAZgCDKAC9AnCAgoQABiwAxjWBBhHmAMAiAYBkAYIkgcEMi4xMKAH8Ro&sclient=gws-wiz-serp#fpstate=ive&vld=cid:695b9964,vid:F_E2jh7FwBQ,st:0
-//https://github.com/MahdiSharifiFar/flutter_crud_php/blob/main/lib/home_page.dart
-//https://www.youtube.com/watch?v=A7sCaN4wnQ4&list=PLKbhw6n2iYKhv-8tBAw6FTsTMuM1OgjC7&index=4
-
 /*Observação
 C:\flutter\packages\flutter_tools\lib\src\web 
 alterar o arquivo chome.dart 
 desativando //'--disable-extensions',
-e adicionando '--disable-web-security', */
+e adicionando '--+, */
 
+/*
+https://www.youtube.com/watch?v=3mlgF5TaSD8
+*/
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
@@ -37,6 +36,9 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  final cpf_controller = TextEditingController();
+  final nome_controller = TextEditingController();
+  final profissao_controller = TextEditingController();
   final List<User> _usersList = [];
   String serverMsg = '';
 
@@ -61,6 +63,32 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
+  void postUsuarios() async {
+    try {
+      final response = await http.post(
+          Uri.parse(
+            'http://localhost/apipessoa/controle.php?cadPessoa',
+          ),
+          body: {
+            'cpf': cpf_controller.text,
+            'nome': nome_controller.text,
+            'profissao': profissao_controller.text
+          }.convertToJson());
+
+      cpf_controller.text = '';
+      nome_controller.text = '';
+      profissao_controller.text = '';
+
+      if (response.statusCode == 200) {
+        serverMsg = "Cadastrado com sucesso";
+        postUsuarios();
+      } else
+        serverMsg = "Erro ao cadastrar";
+    } catch (error) {
+      print(error.toString());
+    }
+  }
+
   @override
   void initState() {
     super.initState();
@@ -74,14 +102,28 @@ class _HomePageState extends State<HomePage> {
         child: Column(
           children: [
             Container(
-              height: 110,
               decoration: BoxDecoration(color: Colors.grey.shade200),
               child: Padding(
                 padding: const EdgeInsets.all(2),
                 child: Column(
                   children: [
-                    const TextField(
-                      decoration: InputDecoration(hintText: 'CPF'),
+                    TextField(
+                      decoration: const InputDecoration(hintText: 'Cpf'),
+                      controller: cpf_controller,
+                    ),
+                    const SizedBox(
+                      height: 32,
+                    ),
+                    TextField(
+                      decoration: const InputDecoration(hintText: 'Nome'),
+                      controller: nome_controller,
+                    ),
+                    const SizedBox(
+                      height: 32,
+                    ),
+                    TextField(
+                      decoration: const InputDecoration(hintText: 'Profissão'),
+                      controller: profissao_controller,
                     ),
                     const SizedBox(
                       height: 32,
@@ -127,7 +169,9 @@ class _HomePageState extends State<HomePage> {
                                 ),
                                 IconButton(
                                   highlightColor: Colors.red.withOpacity(0.4),
-                                  onPressed: () {},
+                                  onPressed: () {
+                                    postUsuarios();
+                                  },
                                   icon: const Icon(Icons.delete,
                                       color: Colors.red),
                                 ),
@@ -174,29 +218,6 @@ class User {
   }
 }
 
-/*class User {
-  String cpf_pessoa,
-  nome_pessoa,
-  profissao_pessoa,
-  email_contato,
-  telefone_contato;
-
-  User(
-      {required this.cpf_pessoa,
-      required this.nome_pessoa,
-      required this.profissao_pessoa,
-      required email_contato,
-      required this.telefone_contato});
-  factory User.fromJson(Map<String, dynamic> json) {
-    return User(
-      cpf_pessoa: (json['cpf_pessoa']),
-      nome_pessoa: (json['nome_pessoa']),
-      profissao_pessoa: (json['profissao_pessoa']),
-      telefone_contato: (json['telefone_pessoa']),
-      email_contato: (json['email_pessoa']),
-    );
-  }
-}*/
 extension on Map {
   String convertToJson() => jsonEncode(this);
 }
